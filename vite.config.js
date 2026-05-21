@@ -27,7 +27,8 @@ export default defineConfig({
   },
   base: "/convert/",
   build: {
-    chunkSizeWarningLimit: 2048,
+    // vendor-sass is ~3.3 MB (full Sass compiler); loaded only for SCSS conversions.
+    chunkSizeWarningLimit: 3500,
     rollupOptions: {
       output: {
         manualChunks(id) {

@@ -1,7 +1,9 @@
 import type { FileFormat, FileData, FormatHandler, ConvertPathNode } from "@/core/format-handler.ts";
 import normalizeMimeType from "@/core/normalize-mime-type.ts";
-import handlers from "@/handlers/registry.ts";
+import { loadHandlers } from "@/handlers/registry.ts";
 import { TraversionGraph } from "@/core/traversion-graph.ts";
+
+let handlers: FormatHandler[] = [];
 import { createIcons, icons } from 'lucide';
 import { ConversionModal } from './conversion-modal.ts';
 import './conversion-modal.css';
@@ -380,6 +382,7 @@ async function buildOptionList () {
 }
 
 (async () => {
+  handlers = await loadHandlers();
   try {
     const cacheJSON = await fetch("cache.json").then(r => r.json());
     window.supportedFormatCache = new Map(cacheJSON);

@@ -1,154 +1,131 @@
 import type { FormatHandler } from "@/core/format-handler.ts";
 
-import canvasToBlobHandler from "./modules/image/canvasToBlob.ts";
-import meydaHandler from "./modules/media/meyda.ts";
-import htmlEmbedHandler from "./modules/utility/htmlEmbed.ts";
-import FFmpegHandler from "./modules/media/FFmpeg.ts";
-import pdftoimgHandler from "./modules/media/pdftoimg.ts";
-import ImageMagickHandler from "./modules/media/ImageMagick.ts";
-import curaniHandler from "./modules/image/curani.ts";
-import bunburrowsHandler from "./modules/image/bunburrows.ts";
-import rgbaHandler from "./modules/image/rgba.ts";
-import svgTraceHandler from "./modules/image/svgTrace.ts";
-import { renameZipHandler, renameTxtHandler, renameJsonHandler } from "./modules/utility/rename.ts";
-import envelopeHandler from "./modules/documents/envelope.ts";
-import pandocHandler from "./modules/documents/pandoc.ts";
-import svgForeignObjectHandler from "./modules/image/svgForeignObject.ts";
-import qoiFuHandler from "./modules/image/qoi-fu.ts";
-import sppdHandler from "./modules/image/sppd.ts";
-import threejsHandler from "./modules/image/threejs.ts";
-import sqlite3Handler from "./modules/utility/sqlite.ts";
-import vtfHandler from "./modules/image/vtf.ts";
-import mcMapHandler from "./modules/games/mcmap.ts";
-import sevenZipHandler from "./modules/archives/sevenZip.ts";
-import configHandler from "./modules/utility/config.ts";
-import alsHandler from "./modules/media/als.ts";
-import qoaFuHandler from "./modules/media/qoa-fu.ts";
-import pyTurtleHandler from "./modules/utility/pyTurtle.ts";
-import { fromJsonHandler, toJsonHandler } from "./modules/documents/json.ts";
-import nbtHandler from "./modules/games/nbt.ts";
-import peToZipHandler from "./modules/archives/petozip.ts";
-import flptojsonHandler from "./modules/games/flptojson.ts";
-import floHandler from "./modules/media/flo.ts";
-import cgbiToPngHandler from "./modules/image/cgbi-to-png.ts";
-import batToExeHandler from "./modules/archives/batToExe.ts";
-import textEncodingHandler from "./modules/utility/textEncoding.ts";
-import jsonToCHandler from "./modules/utility/jsonToC.ts";
-import turbowarpHandler from "./modules/games/turbowarp.ts";
-import libopenmptHandler from "./modules/media/libopenmpt.ts";
-import { midiCodecHandler, midiSynthHandler } from "./modules/media/midi.ts";
-import lzhHandler from "./modules/archives/lzh.ts";
-import txtToInfiniteCraftHandler from "./modules/games/txtToInfiniteCraft.ts";
-import wadHandler from "./modules/games/wad.ts";
-import espeakngHandler from "./modules/media/espeakng.ts";
-import exeToBatHandler from "./modules/archives/exeToBat.ts";
-import bsorHandler from "./modules/games/bsor.ts";
-import fontHandler from "./modules/image/font.ts";
-import icnsHandler from "./modules/image/icns.ts";
-import mcSchematicHandler from "./modules/games/mcSchematicHandler.ts";
-import bsonHandler from "./modules/utility/bson.ts";
-import asepriteHandler from "./modules/image/aseprite.ts";
-import harHandler from "./modules/documents/har.ts";
-import n64romHandler from "./modules/games/n64rom.ts";
-import vexflowHandler from "./modules/media/vexflow.ts";
-import toonHandler from "./modules/documents/toon.ts";
-import rpgmvpHandler from "./modules/games/rpgmvp.ts";
-import otaHandler from "./modules/games/ota.ts";
-import comicsHandler from "./modules/image/comics.ts";
-import terrariaWldHandler from "./modules/games/terrariawld.ts";
-import opusMagnumHandler from "./modules/games/opusMagnum.ts";
-import aperturePictureHandler from "./modules/image/aperturePicture.ts";
-import xcfHandler from "./modules/image/xcf.ts";
-import pdfparseHandler from "./modules/documents/pdfparse.ts";
-import mclangHandler from "./modules/games/minecraftLangfileHandler.ts";
-import celariaMapHandler from "./modules/games/celariaMap.ts";
-import cybergrindHandler from "./modules/games/cybergrindHandler.ts";
-import textToSourceHandler from "./modules/utility/textToSource.ts";
-import wabtHandler from "./modules/utility/wabtHandler.ts";
-import chessjsHandler from "./modules/utility/chessjs.ts";
-import fenToJsonHandler from "./modules/utility/fenToJson.ts";
-import piskelHandler from "./modules/image/piskel.ts";
-import xcursorHandler from "./modules/image/xcursor.ts";
-import shToElfHandler from "./modules/utility/shToElf.ts";
-import cssHandler from "./modules/image/css.ts";
-import TypstHandler from "./modules/documents/typst.ts";
+type HandlerCtor = new () => FormatHandler;
+type HandlerModule = Record<string, unknown>;
 
-const handlers: FormatHandler[] = [];
-try { handlers.push(new svgTraceHandler()) } catch (_) { };
-try { handlers.push(new canvasToBlobHandler()) } catch (_) { };
-try { handlers.push(new meydaHandler()) } catch (_) { };
-try { handlers.push(new htmlEmbedHandler()) } catch (_) { };
-try { handlers.push(new FFmpegHandler()) } catch (_) { };
-try { handlers.push(new pdftoimgHandler()) } catch (_) { };
-try { handlers.push(new ImageMagickHandler()) } catch (_) { };
-try { handlers.push(new curaniHandler()) } catch (_) { };
-try { handlers.push(new bunburrowsHandler()) } catch (_) { };
-try { handlers.push(new rgbaHandler()) } catch (_) { };
-try { handlers.push(renameZipHandler) } catch (_) { };
-try { handlers.push(renameTxtHandler) } catch (_) { };
-try { handlers.push(renameJsonHandler) } catch (_) { };
-try { handlers.push(new envelopeHandler()) } catch (_) { };
-try { handlers.push(new svgForeignObjectHandler()) } catch (_) { };
-try { handlers.push(new qoiFuHandler()) } catch (_) { };
-try { handlers.push(new sppdHandler()) } catch (_) { };
-try { handlers.push(new threejsHandler()) } catch (_) { };
-try { handlers.push(new sqlite3Handler()) } catch (_) { };
-try { handlers.push(new vtfHandler()) } catch (_) { };
-try { handlers.push(new mcMapHandler()) } catch (_) { };
-try { handlers.push(new sevenZipHandler()) } catch (_) { };
-try { handlers.push(new configHandler()) } catch (_) { };
-try { handlers.push(new alsHandler()) } catch (_) { };
-try { handlers.push(new qoaFuHandler()) } catch (_) { };
-try { handlers.push(new pyTurtleHandler()) } catch (_) { };
-try { handlers.push(new fromJsonHandler()) } catch (_) { };
-try { handlers.push(new toJsonHandler()) } catch (_) { };
-try { handlers.push(new nbtHandler()) } catch (_) { };
-try { handlers.push(new peToZipHandler()) } catch (_) { };
-try { handlers.push(new flptojsonHandler()) } catch (_) { };
-try { handlers.push(new floHandler()) } catch (_) { };
-try { handlers.push(new cgbiToPngHandler()) } catch (_) { };
-try { handlers.push(new batToExeHandler()) } catch (_) { };
-try { handlers.push(new turbowarpHandler()) } catch (_) { };
-try { handlers.push(new textEncodingHandler()) } catch (_) { };
-try { handlers.push(new jsonToCHandler()) } catch (_) { };
-try { handlers.push(new libopenmptHandler()) } catch (_) { };
-try { handlers.push(new midiCodecHandler()) } catch (_) { };
-try { handlers.push(new midiSynthHandler()) } catch (_) { };
-try { handlers.push(new lzhHandler()) } catch (_) { };
-try { handlers.push(new wadHandler()) } catch (_) { };
-try { handlers.push(new pandocHandler()) } catch (_) { };
-try { handlers.push(new txtToInfiniteCraftHandler()) } catch (_) { };
-try { handlers.push(new espeakngHandler()) } catch (_) { };
-try { handlers.push(new exeToBatHandler()) } catch (_) { };
-try { handlers.push(new bsorHandler()) } catch (_) { };
-try { handlers.push(new fontHandler()) } catch (_) { };
-try { handlers.push(new icnsHandler()) } catch (_) { };
-try { handlers.push(new mcSchematicHandler()) } catch (_) { };
-try { handlers.push(new bsonHandler()) } catch (_) { };
-try { handlers.push(new asepriteHandler()) } catch (_) { };
-try { handlers.push(new harHandler()) } catch (_) { };
-try { handlers.push(new n64romHandler()) } catch (_) { };
-try { handlers.push(new vexflowHandler()) } catch (_) { };
-try { handlers.push(new toonHandler()) } catch (_) { };
-try { handlers.push(new rpgmvpHandler()) } catch (_) { };
-try { handlers.push(new otaHandler()) } catch (_) { };
-try { handlers.push(new comicsHandler()) } catch (_) { };
-try { handlers.push(new terrariaWldHandler()) } catch (_) { };
-try { handlers.push(new opusMagnumHandler()) } catch (_) { };
-try { handlers.push(new aperturePictureHandler()) } catch (_) { };
-try { handlers.push(new xcfHandler()) } catch (_) { };
-try { handlers.push(new pdfparseHandler()) } catch (_) { };
-try { handlers.push(new mclangHandler()) } catch (_) { };
-try { handlers.push(new celariaMapHandler()) } catch (_) { };
-try { handlers.push(new cybergrindHandler()) } catch (_) { };
-try { handlers.push(new textToSourceHandler()) } catch (_) { };
-try { handlers.push(new wabtHandler()) } catch (_) { };
-try { handlers.push(new chessjsHandler()) } catch (_) { };
-try { handlers.push(new fenToJsonHandler()) } catch (_) { };
-try { handlers.push(new piskelHandler()) } catch (_) { };
-try { handlers.push(new xcursorHandler()) } catch (_) { };
-try { handlers.push(new shToElfHandler()) } catch (_) { };
-try { handlers.push(new cssHandler()) } catch (_) { };
-try { handlers.push(new TypstHandler()) } catch (_) { };
+async function registerDefault(
+  handlers: FormatHandler[],
+  loader: () => Promise<{ default: HandlerCtor }>,
+) {
+  try {
+    handlers.push(new (await loader()).default());
+  } catch {
+    /* handler unavailable in this environment */
+  }
+}
 
-export default handlers;
+async function registerNamed(
+  handlers: FormatHandler[],
+  loader: () => Promise<HandlerModule>,
+  specs: Array<{ name: string; construct?: boolean }>,
+) {
+  try {
+    const mod = await loader();
+    for (const { name, construct } of specs) {
+      const entry = mod[name];
+      if (!entry) continue;
+      handlers.push(
+        construct
+          ? new (entry as HandlerCtor)()
+          : (entry as FormatHandler),
+      );
+    }
+  } catch {
+    /* handler unavailable in this environment */
+  }
+}
+
+/** Load all format handlers (code-split per module). */
+export async function loadHandlers(): Promise<FormatHandler[]> {
+  const handlers: FormatHandler[] = [];
+  const tasks: [
+    Promise<void>,
+    ...Promise<void>[],
+  ] = [
+    registerDefault(handlers, () => import("./modules/image/svgTrace.ts")),
+    registerDefault(handlers, () => import("./modules/image/canvasToBlob.ts")),
+    registerDefault(handlers, () => import("./modules/media/meyda.ts")),
+    registerDefault(handlers, () => import("./modules/utility/htmlEmbed.ts")),
+    registerDefault(handlers, () => import("./modules/media/FFmpeg.ts")),
+    registerDefault(handlers, () => import("./modules/media/pdftoimg.ts")),
+    registerDefault(handlers, () => import("./modules/media/ImageMagick.ts")),
+    registerDefault(handlers, () => import("./modules/image/curani.ts")),
+    registerDefault(handlers, () => import("./modules/image/bunburrows.ts")),
+    registerDefault(handlers, () => import("./modules/image/rgba.ts")),
+    registerNamed(handlers, () => import("./modules/utility/rename.ts"), [
+      { name: "renameZipHandler" },
+      { name: "renameTxtHandler" },
+      { name: "renameJsonHandler" },
+    ]),
+    registerDefault(handlers, () => import("./modules/documents/envelope.ts")),
+    registerDefault(handlers, () => import("./modules/documents/pandoc.ts")),
+    registerDefault(handlers, () => import("./modules/image/svgForeignObject.ts")),
+    registerDefault(handlers, () => import("./modules/image/qoi-fu.ts")),
+    registerDefault(handlers, () => import("./modules/image/sppd.ts")),
+    registerDefault(handlers, () => import("./modules/image/threejs.ts")),
+    registerDefault(handlers, () => import("./modules/utility/sqlite.ts")),
+    registerDefault(handlers, () => import("./modules/image/vtf.ts")),
+    registerDefault(handlers, () => import("./modules/games/mcmap.ts")),
+    registerDefault(handlers, () => import("./modules/archives/sevenZip.ts")),
+    registerDefault(handlers, () => import("./modules/utility/config.ts")),
+    registerDefault(handlers, () => import("./modules/media/als.ts")),
+    registerDefault(handlers, () => import("./modules/media/qoa-fu.ts")),
+    registerDefault(handlers, () => import("./modules/utility/pyTurtle.ts")),
+    registerNamed(handlers, () => import("./modules/documents/json.ts"), [
+      { name: "fromJsonHandler", construct: true },
+      { name: "toJsonHandler", construct: true },
+    ]),
+    registerDefault(handlers, () => import("./modules/games/nbt.ts")),
+    registerDefault(handlers, () => import("./modules/archives/petozip.ts")),
+    registerDefault(handlers, () => import("./modules/games/flptojson.ts")),
+    registerDefault(handlers, () => import("./modules/media/flo.ts")),
+    registerDefault(handlers, () => import("./modules/image/cgbi-to-png.ts")),
+    registerDefault(handlers, () => import("./modules/archives/batToExe.ts")),
+    registerDefault(handlers, () => import("./modules/games/turbowarp.ts")),
+    registerDefault(handlers, () => import("./modules/utility/textEncoding.ts")),
+    registerDefault(handlers, () => import("./modules/utility/jsonToC.ts")),
+    registerDefault(handlers, () => import("./modules/media/libopenmpt.ts")),
+    registerNamed(handlers, () => import("./modules/media/midi.ts"), [
+      { name: "midiCodecHandler", construct: true },
+      { name: "midiSynthHandler", construct: true },
+    ]),
+    registerDefault(handlers, () => import("./modules/archives/lzh.ts")),
+    registerDefault(handlers, () => import("./modules/games/wad.ts")),
+    registerDefault(handlers, () => import("./modules/games/txtToInfiniteCraft.ts")),
+    registerDefault(handlers, () => import("./modules/media/espeakng.ts")),
+    registerDefault(handlers, () => import("./modules/archives/exeToBat.ts")),
+    registerDefault(handlers, () => import("./modules/games/bsor.ts")),
+    registerDefault(handlers, () => import("./modules/image/font.ts")),
+    registerDefault(handlers, () => import("./modules/image/icns.ts")),
+    registerDefault(handlers, () => import("./modules/games/mcSchematicHandler.ts")),
+    registerDefault(handlers, () => import("./modules/utility/bson.ts")),
+    registerDefault(handlers, () => import("./modules/image/aseprite.ts")),
+    registerDefault(handlers, () => import("./modules/documents/har.ts")),
+    registerDefault(handlers, () => import("./modules/games/n64rom.ts")),
+    registerDefault(handlers, () => import("./modules/media/vexflow.ts")),
+    registerDefault(handlers, () => import("./modules/documents/toon.ts")),
+    registerDefault(handlers, () => import("./modules/games/rpgmvp.ts")),
+    registerDefault(handlers, () => import("./modules/games/ota.ts")),
+    registerDefault(handlers, () => import("./modules/image/comics.ts")),
+    registerDefault(handlers, () => import("./modules/games/terrariawld.ts")),
+    registerDefault(handlers, () => import("./modules/games/opusMagnum.ts")),
+    registerDefault(handlers, () => import("./modules/image/aperturePicture.ts")),
+    registerDefault(handlers, () => import("./modules/image/xcf.ts")),
+    registerDefault(handlers, () => import("./modules/documents/pdfparse.ts")),
+    registerDefault(handlers, () => import("./modules/games/minecraftLangfileHandler.ts")),
+    registerDefault(handlers, () => import("./modules/games/celariaMap.ts")),
+    registerDefault(handlers, () => import("./modules/games/cybergrindHandler.ts")),
+    registerDefault(handlers, () => import("./modules/utility/textToSource.ts")),
+    registerDefault(handlers, () => import("./modules/utility/wabtHandler.ts")),
+    registerDefault(handlers, () => import("./modules/utility/chessjs.ts")),
+    registerDefault(handlers, () => import("./modules/utility/fenToJson.ts")),
+    registerDefault(handlers, () => import("./modules/image/piskel.ts")),
+    registerDefault(handlers, () => import("./modules/image/xcursor.ts")),
+    registerDefault(handlers, () => import("./modules/utility/shToElf.ts")),
+    registerDefault(handlers, () => import("./modules/image/css.ts")),
+    registerDefault(handlers, () => import("./modules/documents/typst.ts")),
+  ];
+
+  await Promise.all(tasks);
+  return handlers;
+}
