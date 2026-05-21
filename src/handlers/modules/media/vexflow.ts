@@ -1,5 +1,6 @@
 import * as vexml from '@stringsync/vexml';
 import VexFlow from 'vexflow';
+import JSZip from "jszip";
 import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
 import CommonFormats from "@/core/common-formats.ts";
 import { buildMidi, addNote } from "@/handlers/vendor/midi/midifilelib.js";
@@ -247,7 +248,6 @@ class VexFlowHandler implements FormatHandler {
         
         if (inputFormat.internal === "mxl" || inputFile.name.toLowerCase().endsWith('.mxl')) {
           // MXL format (compressed) - need to decompress
-          const JSZip = (await import('jszip')).default;
           const zip = new JSZip();
           await zip.loadAsync(inputFile.bytes);
           

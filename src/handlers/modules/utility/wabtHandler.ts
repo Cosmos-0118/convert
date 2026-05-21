@@ -1,9 +1,8 @@
 import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
 import { Category } from "@/core/common-formats.ts";
-import wabt from "wabt";
 
-// WabtModule is not exported
-type WabtModule = Awaited<ReturnType<typeof wabt>>;
+type WabtFactory = typeof import("wabt");
+type WabtModule = Awaited<ReturnType<WabtFactory>>;
 
 export default class wabtHandler implements FormatHandler {
   public name: string = "wabt";
@@ -56,6 +55,7 @@ export default class wabtHandler implements FormatHandler {
       },
     ];
 
+    const wabt = (await import("wabt")) as unknown as WabtFactory;
     this.wabtModule = await wabt();
 
     this.ready = true;

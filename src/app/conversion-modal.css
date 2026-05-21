@@ -1,0 +1,365 @@
+/* ═══════════════════════════════════════════════════════
+   Conversion Modal – Terminal-style progress UI
+   ═══════════════════════════════════════════════════════ */
+
+.cvt-modal {
+  width: min(520px, 90vw);
+  background: var(--background-secondary);
+  border: 1px solid var(--surface-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg), 0 0 60px -10px var(--accent-glow);
+}
+
+/* ── Header ──────────────────────────────────────────── */
+.cvt-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+/* Pulse ring animation */
+.cvt-pulse-ring {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.cvt-pulse-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.cvt-pulse-ring::before,
+.cvt-pulse-ring::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--accent-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
+  opacity: 0;
+  animation: cvt-pulse 2s ease-out infinite;
+}
+
+.cvt-pulse-ring::after {
+  animation-delay: 0.6s;
+}
+
+@keyframes cvt-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+.cvt-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.cvt-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.cvt-dots {
+  display: inline-block;
+  min-width: 1.2em;
+  text-align: left;
+}
+
+.cvt-subtitle {
+  margin: 0.35rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.cvt-subtitle svg {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.cvt-badge-from,
+.cvt-badge-to {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  letter-spacing: 0.03em;
+}
+
+.cvt-badge-from {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--accent-primary);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.cvt-badge-to {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* ── Terminal ────────────────────────────────────────── */
+.cvt-terminal {
+  margin: 1rem 1.25rem 1.25rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--surface-border);
+  background: var(--background-primary);
+}
+
+.cvt-terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: var(--surface-default);
+  border-bottom: 1px solid var(--surface-border);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.cvt-terminal-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.cvt-terminal-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.cvt-terminal-dots span:nth-child(1) { background: #ef4444; }
+.cvt-terminal-dots span:nth-child(2) { background: #f59e0b; }
+.cvt-terminal-dots span:nth-child(3) { background: #22c55e; }
+
+.cvt-terminal-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 500;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.cvt-terminal-time {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.cvt-terminal-body {
+  padding: 0.75rem 1rem;
+  max-height: 220px;
+  min-height: 80px;
+  overflow-y: auto;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* Custom scrollbar */
+.cvt-terminal-body::-webkit-scrollbar {
+  width: 5px;
+}
+.cvt-terminal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cvt-terminal-body::-webkit-scrollbar-thumb {
+  background: var(--surface-border);
+  border-radius: 10px;
+}
+
+/* ── Log lines ───────────────────────────────────────── */
+.cvt-log-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.15rem 0;
+  animation: cvt-line-in 0.2s ease-out;
+}
+
+@keyframes cvt-line-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cvt-log-ts {
+  color: var(--text-secondary);
+  opacity: 0.5;
+  min-width: 3.5em;
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 0.72rem;
+}
+
+.cvt-log-prefix {
+  flex-shrink: 0;
+  width: 1.2em;
+  text-align: center;
+}
+
+.cvt-log-msg {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* Level colors */
+.cvt-log-info .cvt-log-prefix { color: var(--accent-primary); }
+.cvt-log-info .cvt-log-msg    { color: var(--text-secondary); }
+
+.cvt-log-step .cvt-log-prefix { color: var(--accent-primary); }
+.cvt-log-step .cvt-log-msg    { color: var(--text-primary); }
+
+.cvt-log-path .cvt-log-prefix { color: var(--accent-secondary); }
+.cvt-log-path .cvt-log-msg    { color: var(--accent-primary); font-weight: 500; }
+
+.cvt-log-success .cvt-log-prefix { color: var(--success); }
+.cvt-log-success .cvt-log-msg    { color: var(--success); font-weight: 600; }
+
+.cvt-log-error .cvt-log-prefix { color: var(--danger); }
+.cvt-log-error .cvt-log-msg    { color: var(--danger); }
+
+.cvt-log-warn .cvt-log-prefix { color: var(--warning); }
+.cvt-log-warn .cvt-log-msg    { color: var(--warning); }
+
+/* ── Pruned lines notice ─────────────────────────────── */
+.cvt-pruned-notice {
+  text-align: center;
+  padding: 0.25rem 0;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  border-bottom: 1px dashed var(--surface-border);
+  margin-bottom: 0.25rem;
+}
+
+/* ── Duplicate counter badge ─────────────────────────── */
+.cvt-dup-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5em;
+  height: 1.2em;
+  padding: 0 0.35em;
+  margin-left: 0.4em;
+  border-radius: 99px;
+  background: var(--surface-border);
+  color: var(--text-primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ── Success / Error icons ───────────────────────────── */
+.cvt-success-icon,
+.cvt-error-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cvt-success-icon {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+
+.cvt-success-icon i,
+.cvt-success-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.cvt-error-icon {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+.cvt-error-icon i,
+.cvt-error-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ── Path chips (success state) ──────────────────────── */
+.cvt-path-chip {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--accent-primary);
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.cvt-path-arrow {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin: 0 0.1rem;
+}
+
+/* ── Close button ────────────────────────────────────── */
+.cvt-close-row {
+  display: flex;
+  justify-content: center;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.cvt-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 2.5rem;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+.cvt-close-btn:hover {
+  background: var(--accent-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px var(--accent-glow);
+}

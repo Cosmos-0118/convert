@@ -3,9 +3,14 @@ import normalizeMimeType from "@/core/normalize-mime-type.ts";
 import handlers from "@/handlers/registry.ts";
 import { TraversionGraph } from "@/core/traversion-graph.ts";
 import { createIcons, icons } from 'lucide';
+import { ConversionModal } from './conversion-modal.ts';
+import './conversion-modal.css';
 
 // Initialize icons immediately
 createIcons({ icons });
+
+/** Singleton modal for conversion progress */
+const conversionModal = new ConversionModal();
 
 /** Files currently selected for conversion */
 let selectedFiles: File[] = [];
@@ -394,17 +399,14 @@ async function attemptConvertPath (files: FileData[], path: ConvertPathNode[]) {
     }
   }
 
-  ui.popupBox.innerHTML = `<div class="modal-content">
-    <div class="spinner"></div>
-    <h2>Finding conversion route...</h2>
-    <p>Trying <b style="color: var(--accent-primary);">${pathString}</b>...</p>
-  </div>`;
+  conversionModal.logPath(path.map(c => c.format.format));
 
   for (let i = 0; i < path.length - 1; i ++) {
     const handler = path[i + 1].handler;
     try {
       let supportedFormats = window.supportedFormatCache.get(handler.name);
       if (!handler.ready) {
+        conversionModal.log('info', `Initializing ${handler.name}...`);
         await handler.init();
         if (!handler.ready) throw `Handler "${handler.name}" not ready after init.`;
         if (handler.supportedFormats) {
@@ -419,12 +421,20 @@ async function attemptConvertPath (files: FileData[], path: ConvertPathNode[]) {
         && c.format === path[i].format.format
       ) || (handler.supportAnyInput ? path[i].format : undefined);
       if (!inputFormat) throw `Handler "${handler.name}" doesn't support the "${path[i].format.format}" format.`;
+      
+      conversionModal.logStep(handler.name, path[i].format.format, path[i + 1].format.format);
+
+      // Force the browser to paint the terminal log before synchronous WebAssembly blocks the thread
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
       files = (await Promise.all([
         handler.doConvert(files, inputFormat, path[i + 1].format),
         // Ensure that we wait long enough for the UI to update
         new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
       ]))[0];
       if (files.some(c => !c.bytes.length)) throw "Output is empty.";
+
+      conversionModal.log('success', `${path[i].format.format} → ${path[i + 1].format.format} done`);
     } catch (e) {
 
       console.log(path.map(c => c.format.format));
@@ -437,11 +447,7 @@ async function attemptConvertPath (files: FileData[], path: ConvertPathNode[]) {
       deadEndAttempts.push(deadEndPath);
       window.traversionGraph.addDeadEndPath(path.slice(0, i + 2));
 
-      ui.popupBox.innerHTML = `<div class="modal-content">
-        <div class="spinner"></div>
-        <h2>Finding conversion route...</h2>
-        <p>Looking for a valid path...</p>
-      </div>`;
+      conversionModal.logRetry(`${path[i].format.format} → ${path[i + 1].format.format} failed via ${handler.name}`);
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
       return null;
@@ -499,6 +505,8 @@ ui.convertButton.onclick = async function () {
   const inputFormat = inputOption.format;
   const outputFormat = outputOption.format;
 
+  const conversionStart = performance.now();
+
   try {
 
     const inputFileData = [];
@@ -515,14 +523,15 @@ ui.convertButton.onclick = async function () {
       inputFileData.push({ name: inputFile.name, bytes: inputBytes });
     }
 
-    window.showPopup("<h2>Finding conversion route...</h2>");
+    conversionModal.showLoading(inputFormat.format, outputFormat.format);
     // Delay for a bit to give the browser time to render
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
+    conversionModal.log('info', `Reading ${inputFiles.length} file(s)...`);
+
     const output = await window.tryConvertByTraversing(inputFileData, inputOption, outputOption);
     if (!output) {
-      window.hidePopup();
-      alert("Failed to find conversion route.");
+      conversionModal.showError('No valid conversion route found.');
       return;
     }
 
@@ -530,20 +539,15 @@ ui.convertButton.onclick = async function () {
       downloadFile(file.bytes, file.name);
     }
 
-    window.showPopup(
-      `<div class="upload-icon-wrapper" style="color: var(--success); background: rgba(16, 185, 129, 0.1); margin: 0 auto 1rem auto; width: 60px; height: 60px;">
-        <i data-lucide="check-circle-2" style="width: 30px; height: 30px;"></i>
-      </div>
-      <h2 style="margin-bottom: 0.5rem;">Conversion Successful!</h2>` +
-      `<p style="margin-bottom: 1.5rem;">Path used: <b style="color: var(--accent-primary);">${output.path.map(c => c.format.format).join(" → ")}</b></p>\n` +
-      `<button onclick="window.hidePopup()">Close</button>`
+    const elapsed = performance.now() - conversionStart;
+    conversionModal.showSuccess(
+      output.path.map(c => c.format.format),
+      elapsed
     );
-    createIcons({ icons });
 
   } catch (e) {
 
-    window.hidePopup();
-    alert("Unexpected error while routing:\n" + e);
+    conversionModal.showError(String(e));
     console.error(e);
 
   }
