@@ -1,27 +1,27 @@
 [submodule "src/handlers/envelope"]
-	path = src/handlers/envelope
+	path = src/handlers/vendor/envelope
 	url = https://github.com/p2r3/envelope
 [submodule "src/handlers/qoi-fu"]
-	path = src/handlers/qoi-fu
+	path = src/handlers/vendor/qoi-fu
 	url = https://github.com/pfusik/qoi-fu
 [submodule "src/handlers/sppd"]
-	path = src/handlers/sppd
+	path = src/handlers/vendor/sppd
 	url = https://github.com/p2r3/sppd
 [submodule "src/handlers/qoa-fu"]
-	path = src/handlers/qoa-fu
+	path = src/handlers/vendor/qoa-fu
 	url = https://github.com/pfusik/qoa-fu
 [submodule "src/handlers/image-to-txt"]
-	path = src/handlers/image-to-txt
+	path = src/handlers/vendor/image-to-txt
 	url = https://git.sr.ht/~thezipcreator/image-to-txt
 [submodule "src/handlers/espeakng.js"]
-	path = src/handlers/espeakng.js
+	path = src/handlers/vendor/espeakng.js
 	url = https://github.com/TheZipCreator/espeakng.js
 [submodule "src/handlers/rpgmvp-decrypter"]
-	path = src/handlers/rpgmvp-decrypter
+	path = src/handlers/vendor/rpgmvp-decrypter
 	url = https://github.com/ConnorTippets/RPG-Maker-MV-Decrypter.git
 [submodule "src/handlers/terraria-wld-parser"]
-	path = src/handlers/terraria-wld-parser
+	path = src/handlers/vendor/terraria-wld-parser
 	url = https://github.com/ConnorTippets/terraria-world-file-ts.git
 [submodule "src/handlers/gimper"]
-	path = src/handlers/gimper
+	path = src/handlers/vendor/gimper
 	url = https://github.com/ConnorTippets/gimper.git
