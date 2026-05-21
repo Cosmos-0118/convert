@@ -309,13 +309,33 @@ ui.modeToggleButton.addEventListener("click", () => {
   simpleMode = !simpleMode;
   if (simpleMode) {
     ui.modeToggleButton.textContent = "Advanced mode";
-    document.body.style.setProperty("--highlight-color", "#1C77FF");
+    document.body.classList.remove("advanced-mode");
   } else {
     ui.modeToggleButton.textContent = "Simple mode";
-    document.body.style.setProperty("--highlight-color", "#FF6F1C");
+    document.body.classList.add("advanced-mode");
   }
   buildOptionList();
 });
+
+const themeSwitcher = document.querySelector("#theme-switcher") as HTMLSelectElement;
+if (themeSwitcher) {
+  themeSwitcher.addEventListener("change", (e) => {
+    const target = e.target as HTMLSelectElement;
+    document.documentElement.setAttribute("data-theme", target.value);
+    
+    // Update theme-color meta tag
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      if (target.value === 'dark') {
+        metaThemeColor.setAttribute("content", "#0f172a");
+      } else if (target.value === 'black-red') {
+        metaThemeColor.setAttribute("content", "#000000");
+      } else {
+        metaThemeColor.setAttribute("content", "#f8fafc");
+      }
+    }
+  });
+}
 
 let deadEndAttempts: ConvertPathNode[][];
 
