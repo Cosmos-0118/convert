@@ -19,7 +19,7 @@ export default defineConfig({
           dest: "wasm"
         },
         {
-          src: "src/handlers/pandoc/pandoc.wasm",
+          src: "src/handlers/vendor/pandoc/pandoc.wasm",
           dest: "wasm"
         },
         {
@@ -31,11 +31,11 @@ export default defineConfig({
           dest: "wasm"
         },
         {
-          src: "src/handlers/libopenmpt/libopenmpt.wasm",
+          src: "src/handlers/vendor/libopenmpt/libopenmpt.wasm",
           dest: "wasm"
         },
         {
-          src: "src/handlers/libopenmpt/libopenmpt.js",
+          src: "src/handlers/vendor/libopenmpt/libopenmpt.js",
           dest: "wasm"
         },
         {
@@ -47,15 +47,15 @@ export default defineConfig({
           dest: "wasm"
         },
         {
-          src: "src/handlers/midi/TimGM6mb.sf2",
+          src: "src/handlers/vendor/midi/TimGM6mb.sf2",
           dest: "wasm"
         },
         {
-          src: "src/handlers/espeakng.js/js/espeakng.worker.js",
+          src: "src/handlers/vendor/espeakng.js/js/espeakng.worker.js",
           dest: "js"
         },
         {
-          src: "src/handlers/espeakng.js/js/espeakng.worker.data",
+          src: "src/handlers/vendor/espeakng.js/js/espeakng.worker.data",
           dest: "js"
         },
         {
@@ -63,7 +63,7 @@ export default defineConfig({
           dest: "js"
         },
         {
-          src: "src/handlers/tarCompressed/liblzma.wasm",
+          src: "src/handlers/vendor/tarCompressed/liblzma.wasm",
           dest: "wasm"
         },
         {

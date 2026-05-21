@@ -1,4 +1,4 @@
-import { FileData, FileFormat, FormatHandler } from "../src/FormatHandler";
+import { FileData, FileFormat, FormatHandler } from "../src/core/format-handler.ts";
 
 /**
  * A mock implementation of the FormatHandler interface for testing purposes.

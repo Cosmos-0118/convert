@@ -1,7 +1,7 @@
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats from "@/core/common-formats.ts";
 import mime from "mime";
-import normalizeMimeType from "../normalizeMimeType.ts";
+import normalizeMimeType from "@/core/normalize-mime-type.ts";
 
 class pandocHandler implements FormatHandler {
 
@@ -161,7 +161,7 @@ class pandocHandler implements FormatHandler {
   }>;
 
   async init () {
-    const { query, convert } = await import("./pandoc/pandoc.js");
+    const { query, convert } = await import("@/handlers/vendor/pandoc/pandoc.js");
     this.query = query;
     this.convert = convert;
 

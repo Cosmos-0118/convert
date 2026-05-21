@@ -1,5 +1,5 @@
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import { Category } from "../CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import { Category } from "@/core/common-formats.ts";
 import wabt from "wabt";
 
 // WabtModule is not exported

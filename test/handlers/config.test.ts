@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
-import CommonFormats from '../../src/CommonFormats.js';
-import { FormatDefinition } from '../../src/FormatHandler.js';
-import configHandler from '../../src/handlers/config.ts';
+import CommonFormats from '../../src/core/common-formats.ts';
+import { FormatDefinition } from '../../src/core/format-handler.ts';
+import configHandler from '../../src/handlers/modules/utility/config.ts';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();

@@ -1,7 +1,7 @@
-import type { FileFormat, FileData, FormatHandler, ConvertPathNode } from "./FormatHandler.js";
-import normalizeMimeType from "./normalizeMimeType.js";
-import handlers from "./handlers";
-import { TraversionGraph } from "./TraversionGraph.js";
+import type { FileFormat, FileData, FormatHandler, ConvertPathNode } from "@/core/format-handler.ts";
+import normalizeMimeType from "@/core/normalize-mime-type.ts";
+import handlers from "@/handlers/registry.ts";
+import { TraversionGraph } from "@/core/traversion-graph.ts";
 
 /** Files currently selected for conversion */
 let selectedFiles: File[] = [];

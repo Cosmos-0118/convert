@@ -1,5 +1,5 @@
-import { ConvertPathNode, type FileFormat, type FormatHandler } from "./FormatHandler.ts";
-import { PriorityQueue } from './PriorityQueue.ts';
+import { ConvertPathNode, type FileFormat, type FormatHandler } from "@/core/format-handler.ts";
+import { PriorityQueue } from "@/core/priority-queue.ts";
 
 interface QueueNode {
     index: number;

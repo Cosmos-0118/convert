@@ -12,43 +12,34 @@
       "vite/client"
     ],
     "skipLibCheck": true,
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
     "allowJs": true,
-    /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    /* Temporary fix!!! This is only really a problem in dependencies. */
-    /* Not sure how to best handle this in the long term, though. */
-    "noUnusedLocals": false, /* SHOULD be true */
-    "noUnusedParameters": false, /* SHOULD be true */
-    /**
-     * The TS transpilation of the qoi-fu dependency isn't compabile with
-     * our settings. They do provide a JS file, but tsc _really_ wants to
-     * import the TS file instead. We define a custom path to steer it
-     * away from the TS file.
-     */
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "baseUrl": ".",
     "paths": {
-      "qoi-fu": ["./src/handlers/qoi-fu/transpiled/QOI.js"],
-      "qoa-fu": ["./src/handlers/qoa-fu/transpiled/QOA.js"]
+      "@/*": ["./src/*"],
+      "qoi-fu": ["./src/handlers/vendor/qoi-fu/transpiled/QOI.js"],
+      "qoa-fu": ["./src/handlers/vendor/qoa-fu/transpiled/QOA.js"]
     }
   },
   "include": [
     "src"
   ],
   "exclude": [
-    "src/handlers/qoi-fu/**/*",
-    "src/handlers/qoa-fu/**/*",
-    "src/handlers/sppd/**/*",
-    "src/handlers/espeakng.js/**/*",
-    "src/handlers/image-to-txt/src/app.ts",
-    "src/handlers/image-to-txt/src/generate.ts",
-    "src/handlers/terraria-wld-parser/**/*"
+    "src/handlers/vendor/qoi-fu/**/*",
+    "src/handlers/vendor/qoa-fu/**/*",
+    "src/handlers/vendor/sppd/**/*",
+    "src/handlers/vendor/espeakng.js/**/*",
+    "src/handlers/vendor/image-to-txt/src/app.ts",
+    "src/handlers/vendor/image-to-txt/src/generate.ts",
+    "src/handlers/vendor/terraria-wld-parser/**/*"
   ]
 }

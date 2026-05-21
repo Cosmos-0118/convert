@@ -1,6 +1,6 @@
-import { TraversionGraph } from "../src/TraversionGraph";
-import CommonFormats from "../src/CommonFormats.ts";
-import { ConvertPathNode, type FileFormat, type FormatHandler } from "../src/FormatHandler.ts";
+import { TraversionGraph } from "../src/core/traversion-graph.ts";
+import CommonFormats from "../src/core/common-formats.ts";
+import { ConvertPathNode, type FileFormat, type FormatHandler } from "../src/core/format-handler.ts";
 import { MockedHandler } from "./MockedHandler.ts";
 import { expect, test } from "bun:test";
 

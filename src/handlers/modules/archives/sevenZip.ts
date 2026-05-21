@@ -1,10 +1,10 @@
 // file: 7z.ts
 
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats, { Category } from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats, { Category } from "@/core/common-formats.ts";
 import SevenZip from "7z-wasm";
 import mime from "mime";
-import normalizeMimeType from "src/normalizeMimeType.ts";
+import normalizeMimeType from "@/core/normalize-mime-type.ts";
 
 const defaultSevenZipOptions = {
   locateFile: () => "/convert/wasm/7zz.wasm"

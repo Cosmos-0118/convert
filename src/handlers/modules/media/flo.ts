@@ -1,6 +1,6 @@
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import normalizeMimeType from "../normalizeMimeType.ts";
-import CommonFormats from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import normalizeMimeType from "@/core/normalize-mime-type.ts";
+import CommonFormats from "@/core/common-formats.ts";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 
 function interleaveAudioBuffer(buffer: AudioBuffer): Float32Array {
@@ -150,7 +150,7 @@ class floHandler implements FormatHandler {
 
   async init() {
     try {
-      this.#worker = new Worker(new URL("./flo.worker.ts", import.meta.url), { type: "module" });
+      this.#worker = new Worker(new URL("../../workers/flo.worker.ts", import.meta.url), { type: "module" });
       this.#workerReady = new Promise((resolve, reject) => {
         this.#worker!.onmessage = (ev: MessageEvent) => {
           const m = ev.data as any;

@@ -1,7 +1,7 @@
 // file: textToSource.ts
 
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats from "@/core/common-formats.ts";
 
 function python(text: string): string {
   return `print(${JSON.stringify(text)})`;

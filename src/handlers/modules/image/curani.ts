@@ -1,7 +1,7 @@
 // file: curani.ts
 
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats from "@/core/common-formats.ts";
 
 function read_lendian(x : number, y: number): number {
     return x + (y * 16 * 16);

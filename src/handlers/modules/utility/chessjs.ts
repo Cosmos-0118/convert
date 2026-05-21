@@ -1,7 +1,7 @@
 // file: chessjs.ts
 
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats, { Category } from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats, { Category } from "@/core/common-formats.ts";
 import { Chess } from 'chess.js';
 
 class chessjsHandler implements FormatHandler {

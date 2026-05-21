@@ -1,7 +1,7 @@
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats from "src/CommonFormats.ts";
-import { Decrypter } from "./rpgmvp-decrypter/scripts/Decrypter.js";
-import { RPGFile } from "./rpgmvp-decrypter/scripts/RPGFile.js";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats from "@/core/common-formats.ts";
+import { Decrypter } from "@/handlers/vendor/rpgmvp-decrypter/scripts/Decrypter.js";
+import { RPGFile } from "@/handlers/vendor/rpgmvp-decrypter/scripts/RPGFile.js";
 
 class rpgmvpHandler implements FormatHandler {
 

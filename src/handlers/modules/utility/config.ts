@@ -1,6 +1,6 @@
 import { parseJSON, parseJSON5, parseJSONC, parseYAML, parseTOML, parseINI, stringifyJSON, stringifyJSON5, stringifyJSONC, stringifyYAML, stringifyTOML, stringifyINI } from "confbox";
-import CommonFormats, { Category } from "src/CommonFormats.ts";
-import { FormatDefinition, type FileData, type FileFormat, type FormatHandler } from "../FormatHandler.ts";
+import CommonFormats, { Category } from "@/core/common-formats.ts";
+import { FormatDefinition, type FileData, type FileFormat, type FormatHandler } from "@/core/format-handler.ts";
 
 const JSON5_FORMAT = new FormatDefinition(
   "JSON5",

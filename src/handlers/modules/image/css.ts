@@ -1,5 +1,5 @@
-import { FormatDefinition, type FileData, type FileFormat, type FormatHandler } from "../FormatHandler.ts";
-import CommonFormats, { Category } from "src/CommonFormats.ts";
+import { FormatDefinition, type FileData, type FileFormat, type FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats, { Category } from "@/core/common-formats.ts";
 
 const LESS_FORMAT = new FormatDefinition(
   "LESS Stylesheet",

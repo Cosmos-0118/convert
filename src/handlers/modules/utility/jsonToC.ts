@@ -1,7 +1,7 @@
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import {JsonType} from "./jsonToC/JsonType.ts";
-import JsonTypeFactory from "./jsonToC/JsonTypeFactory.ts";
-import CommonFormats from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import {JsonType} from "@/handlers/vendor/jsonToC/JsonType.ts";
+import JsonTypeFactory from "@/handlers/vendor/jsonToC/JsonTypeFactory.ts";
+import CommonFormats from "@/core/common-formats.ts";
 
 export default class jsonToCHandler implements FormatHandler {
     /**************************************************/

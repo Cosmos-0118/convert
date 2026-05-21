@@ -1,7 +1,7 @@
 import { afterAll, expect, test } from "bun:test";
 import puppeteer from "puppeteer";
-import type { FileData, FormatHandler, FileFormat, ConvertPathNode } from "../src/FormatHandler.js";
-import CommonFormats from "../src/CommonFormats.js";
+import type { FileData, FormatHandler, FileFormat, ConvertPathNode } from "../src/core/format-handler.ts";
+import CommonFormats from "../src/core/common-formats.ts";
 
 declare global {
   interface Window {

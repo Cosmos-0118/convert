@@ -1,5 +1,5 @@
-import CommonFormats from "src/CommonFormats.ts";
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
+import CommonFormats from "@/core/common-formats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
 import type { TypstSnippet } from "@myriaddreamin/typst.ts/dist/esm/contrib/snippet.mjs";
 
 class TypstHandler implements FormatHandler {

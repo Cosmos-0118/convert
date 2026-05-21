@@ -1,7 +1,7 @@
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import { Replay } from "./bsor/replay.ts";
-import { render } from "./bsor/renderer.ts";
-import CommonFormats from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import { Replay } from "@/handlers/vendor/bsor/replay.ts";
+import { render } from "@/handlers/vendor/bsor/renderer.ts";
+import CommonFormats from "@/core/common-formats.ts";
 
 class bsorHandler implements FormatHandler {
   public name: string = "bsor";

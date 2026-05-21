@@ -1,7 +1,7 @@
 // file: fenToJson.ts
 
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats, { Category } from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats, { Category } from "@/core/common-formats.ts";
 import { BLACK, KING, QUEEN, SQUARES, WHITE, type Color, type PieceSymbol, type Square } from 'chess.js';
 
 // same as .board() on chess.js

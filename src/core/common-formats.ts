@@ -1,4 +1,4 @@
-import { FormatDefinition } from "src/FormatHandler"
+import { FormatDefinition } from "@/core/format-handler.ts"
 
 export const Category = {
     DATA: "data",

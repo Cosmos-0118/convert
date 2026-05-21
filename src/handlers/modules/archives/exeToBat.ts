@@ -1,5 +1,5 @@
-import type { FileFormat, FileData, FormatHandler } from "../FormatHandler.js";
-import CommonFormats from "src/CommonFormats.js";
+import type { FileFormat, FileData, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats from "@/core/common-formats.ts";
 
 // Toggle logging for debugging EXE to BAT conversion
 const DEBUG_EXE_TO_BAT = false;

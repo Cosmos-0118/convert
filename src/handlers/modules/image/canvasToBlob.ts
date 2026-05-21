@@ -1,6 +1,6 @@
-import CommonFormats from "src/CommonFormats.ts";
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import { imageToText, rgbaToGrayscale } from "./image-to-txt/src/convert.ts";
+import CommonFormats from "@/core/common-formats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import { imageToText, rgbaToGrayscale } from "@/handlers/vendor/image-to-txt/src/convert.ts";
 
 class canvasToBlobHandler implements FormatHandler {
 

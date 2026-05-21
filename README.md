@@ -77,6 +77,28 @@ docker compose -f docker/docker-compose.yml -f docker/docker-compose.override.ym
 
 The first Docker build is expected to be slow because Chromium and related system packages are installed in the build stage (needed for puppeteer in `buildCache.js`). Later builds are usually much faster due to Docker layer caching.
 
+## Project structure
+
+```
+src/
+├── app/main.ts              # UI and conversion orchestration
+├── core/                    # Shared types, formats, graph, MIME helpers
+├── handlers/
+│   ├── registry.ts          # Registers all format handlers
+│   ├── modules/             # Handler implementations by domain
+│   │   ├── media/           # FFmpeg, ImageMagick, audio, etc.
+│   │   ├── image/
+│   │   ├── documents/
+│   │   ├── archives/
+│   │   ├── games/
+│   │   └── utility/
+│   ├── vendor/              # Git submodules + local WASM/assets
+│   └── workers/             # Web workers (e.g. flo)
+└── electron.cjs             # Desktop shell
+```
+
+Imports use the `@/` path alias (maps to `src/`).
+
 ## Contributing
 
 The best way to contribute is by adding support for new file formats (duh). If you don't have a format to add but are eager to help, take a look at our issues. There are plenty of suggestions there.
@@ -85,15 +107,15 @@ Here's how adding a format works works:
 
 ### Creating a handler
 
-Each "tool" used for conversion has to be normalized to a standard form - effectively a "wrapper" that abstracts away the internal processes. These wrappers are available in [src/handlers](src/handlers/).
+Each "tool" used for conversion has to be normalized to a standard form - effectively a "wrapper" that abstracts away the internal processes. Handler wrappers live under `src/handlers/modules/` (grouped by domain), with shared assets and git submodules under `src/handlers/vendor/`. The registry is `src/handlers/registry.ts`.
 
 Below is a super barebones handler that does absolutely nothing. You can use this as a starting point for adding a new format:
 
 ```ts
-// file: dummy.ts
+// file: src/handlers/modules/utility/dummy.ts
 
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
-import CommonFormats from "src/CommonFormats.ts";
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts";
+import CommonFormats from "@/core/common-formats.ts";
 
 class dummyHandler implements FormatHandler {
 
@@ -139,14 +161,14 @@ class dummyHandler implements FormatHandler {
 export default dummyHandler;
 ```
 
-For more details on how all of these components work, refer to the doc comments in [src/FormatHandler.ts](src/FormatHandler.ts). You can also take a look at existing handlers to get a more practical example.
+For more details on how all of these components work, refer to the doc comments in [src/core/format-handler.ts](src/core/format-handler.ts). You can also take a look at existing handlers under `src/handlers/modules/` for practical examples.
 
 There are a few additional things that I want to point out in particular:
 
 - Pay attention to the naming system. If your tool is called `dummy`, then the class should be called `dummyHandler`, and the file should be called `dummy.ts`.
 - The handler is responsible for setting the output file's name. This is done to allow for flexibility in rare cases where the _full_ file name matters. Of course, in most cases, you'll only have to swap the file extension.
 - The handler is also responsible for ensuring that any byte buffers that enter or exit the handler _do not get mutated_. If necessary, clone the buffer by wrapping it in `new Uint8Array()`.
-- When handling MIME types, run them through [normalizeMimeType](src/normalizeMimeType.ts) first. One file can have multiple valid MIME types, which isn't great when you're trying to match them algorithmically.
+- When handling MIME types, run them through [normalizeMimeType](src/core/normalize-mime-type.ts) first. One file can have multiple valid MIME types, which isn't great when you're trying to match them algorithmically.
 - When implementing/suggesting a new file format, please treat the file as the media that it represents, not the data that it contains. For example, if you were making an SVG handler, you should treat the file as an _image_, not as XML. In other words, avoid simple "binary waterfalls", as they're not semantically meaningful.
 
 ### Testing
@@ -163,8 +185,8 @@ Not every handler needs a dedicated unit test, but handlers with non-trivial cus
 If your tool requires an external dependency (which it likely does), there are currently two well-established ways of going about this:
 
 - If it's an `npm` package, just install it to the project like you normally would.
-- If it's a Git repository, add it as a submodule to [src/handlers](src/handlers).
-- If neither of the above are available, then **as a last resort**, you may create a folder with the required assets under `src/handlers/handlerName`.
+- If it's a Git repository, add it as a submodule under `src/handlers/vendor/`.
+- If neither of the above are available, then **as a last resort**, you may create a folder with the required assets under `src/handlers/vendor/handlerName`.
 
 **Please try to avoid CDNs (Content Delivery Networks).** They're really cool on paper, but they don't work well with TypeScript, and each one introduces a tiny bit of instability. For a project that leans heavily on external dependencies, those bits of instability can add up fast.
 

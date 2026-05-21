@@ -7,8 +7,8 @@ import { PlayerSpawnPoint } from "celaria-formats/class/maps/objects/PlayerSpawn
 import { Sphere } from "celaria-formats/class/maps/objects/Sphere.mjs"
 import { TutorialHologram } from "celaria-formats/class/maps/objects/TutorialHologram.mjs"
 import type { FlatVector3, Vector3 } from "celaria-formats/types/data.mts"
-import CommonFormats from "src/CommonFormats.ts"
-import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts"
+import CommonFormats from "@/core/common-formats.ts"
+import type { FileData, FileFormat, FormatHandler } from "@/core/format-handler.ts"
 
 class celariaMapHandler implements FormatHandler {
 	public name: string = "celariaMap"

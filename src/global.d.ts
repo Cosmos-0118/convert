@@ -1,5 +1,5 @@
-import type { FileFormat, FileData, ConvertPathNode } from "./FormatHandler.js";
-import type { TraversionGraph } from "./TraversionGraph.js";
+import type { FileFormat, FileData, ConvertPathNode } from "@/core/format-handler.ts";
+import type { TraversionGraph } from "@/core/traversion-graph.ts";
 
 declare global {
   interface Window {
