@@ -33,15 +33,23 @@ const ui = {
   outputSearch: document.querySelector("#search-to") as HTMLInputElement,
   popupBox: document.querySelector("#popup") as HTMLDivElement,
   popupBackground: document.querySelector("#popup-bg") as HTMLDivElement,
-  formatContainers: document.querySelector("#format-containers") as HTMLDivElement
+  formatContainers: document.querySelector("#format-containers") as HTMLDivElement,
+  
+  // Steps
+  stepUpload: document.querySelector("#step-upload") as HTMLDivElement,
+  stepFormats: document.querySelector("#step-formats") as HTMLDivElement,
+  heroHeader: document.querySelector("#hero-header") as HTMLElement,
+  selectedFileName: document.querySelector("#selected-file-name") as HTMLDivElement,
+  selectedFileCount: document.querySelector("#selected-file-count") as HTMLDivElement,
+  btnChangeFile: document.querySelector("#btn-change-file") as HTMLButtonElement,
 };
 
 // Ensure popup is visible initially if needed
 ui.popupBackground.style.display = "block";
 ui.popupBackground.style.opacity = "1";
-ui.popupBox.style.display = "block";
+ui.popupBox.style.display = "flex";
 ui.popupBox.style.opacity = "1";
-ui.popupBox.style.transform = "translate(-50%, -50%) scale(1)";
+ui.popupBox.style.transform = "scale(1)";
 
 /**
  * Filters a list of butttons to exclude those not matching a substring.
@@ -49,16 +57,18 @@ ui.popupBox.style.transform = "translate(-50%, -50%) scale(1)";
  * @param string Substring for which to search.
  */
 const filterButtonList = (list: HTMLDivElement, string: string) => {
+  const lower = string.toLowerCase();
   for (const button of Array.from(list.children)) {
     if (!(button instanceof HTMLButtonElement)) continue;
     const formatIndex = button.getAttribute("format-index");
     let hasExtension = false;
     if (formatIndex) {
       const format = allOptions[parseInt(formatIndex)];
-      hasExtension = format?.format.extension.toLowerCase().includes(string);
+      hasExtension = format?.format.extension.toLowerCase().includes(lower);
     }
-    const hasText = button.textContent.toLowerCase().includes(string);
-    if (!hasExtension && !hasText) {
+    // Search across all visible text in the button's inner structure
+    const fullText = button.textContent?.toLowerCase() || '';
+    if (!hasExtension && !fullText.includes(lower)) {
       button.style.display = "none";
     } else {
       button.style.display = "";
@@ -74,7 +84,8 @@ const searchHandler = (event: Event) => {
   const target = event.target;
   if (!(target instanceof HTMLInputElement)) return;
 
-  const targetParentList = target.parentElement?.querySelector(".format-list");
+  const targetContainer = target.closest('.format-container');
+  const targetParentList = targetContainer?.querySelector(".format-list");
   if (!(targetParentList instanceof HTMLDivElement)) return;
 
   const string = target.value.toLowerCase();
@@ -121,20 +132,19 @@ const fileSelectHandler = (event: Event) => {
   files.sort((a, b) => a.name === b.name ? 0 : (a.name < b.name ? -1 : 1));
   selectedFiles = files;
 
-  ui.fileSelectArea.innerHTML = `
-    <div class="upload-icon-wrapper" style="color: var(--success); background: rgba(16, 185, 129, 0.1);">
-      <i data-lucide="check-circle-2"></i>
-    </div>
-    <div class="upload-text">
-      <h2>${files[0].name}</h2>
-      <p>${files.length > 1 ? `... and ${files.length - 1} more files` : "File ready for conversion"}</p>
-    </div>
-  `;
-  createIcons({ icons });
+  // Switch Steps
+  ui.stepUpload.style.display = "none";
+  ui.stepFormats.style.display = "flex";
+  ui.heroHeader.style.display = "none";
+  const card = document.querySelector(".converter-card");
+  if (card) card.classList.add("expanded");
 
-  // Show format selectors if hidden
-  if (ui.formatContainers.style.display === "none") {
-    ui.formatContainers.style.display = "flex";
+  if (files.length === 1) {
+    ui.selectedFileName.textContent = files[0].name;
+    ui.selectedFileCount.textContent = "1 file selected";
+  } else {
+    ui.selectedFileName.textContent = `Batch Conversion`;
+    ui.selectedFileCount.textContent = `${files.length} files selected`;
   }
 
   // Common MIME type adjustments (to match "mime" library)
@@ -193,18 +203,36 @@ window.addEventListener("drop", fileSelectHandler);
 window.addEventListener("dragover", e => e.preventDefault());
 window.addEventListener("paste", fileSelectHandler);
 
+// Handle "Change Files" button click
+ui.btnChangeFile.addEventListener("click", () => {
+  selectedFiles = [];
+  ui.stepUpload.style.display = "block";
+  ui.stepFormats.style.display = "none";
+  ui.heroHeader.style.display = "block";
+  ui.fileInput.value = "";
+  
+  // Remove expanded class
+  const card = document.querySelector(".converter-card");
+  if (card) card.classList.remove("expanded");
+  
+  // Deselect format buttons
+  const allSelected = document.querySelectorAll('.format-list .selected');
+  allSelected.forEach(el => el.classList.remove('selected'));
+  ui.convertButton.className = "btn-primary disabled";
+});
+
 /**
  * Display an on-screen popup.
  * @param html HTML content of the popup box.
  */
 window.showPopup = function (html: string) {
   ui.popupBox.innerHTML = `<div class="modal-content">${html}</div>`;
-  ui.popupBox.style.display = "block";
+  ui.popupBox.style.display = "flex";
   ui.popupBackground.style.display = "block";
   // Force reflow
   void ui.popupBox.offsetWidth;
   ui.popupBox.style.opacity = "1";
-  ui.popupBox.style.transform = "translate(-50%, -50%) scale(1)";
+  ui.popupBox.style.transform = "scale(1)";
   ui.popupBackground.style.opacity = "1";
 }
 /**
@@ -212,7 +240,7 @@ window.showPopup = function (html: string) {
  */
 window.hidePopup = function () {
   ui.popupBox.style.opacity = "0";
-  ui.popupBox.style.transform = "translate(-50%, -50%) scale(0.95)";
+  ui.popupBox.style.transform = "scale(0.95)";
   ui.popupBackground.style.opacity = "0";
   setTimeout(() => {
     ui.popupBox.style.display = "none";
@@ -280,26 +308,49 @@ async function buildOptionList () {
       newOption.setAttribute("format-index", (allOptions.length - 1).toString());
       newOption.setAttribute("mime-type", format.mime);
 
+      // Determine category for color dot
+      const category = Array.isArray(format.category)
+        ? format.category[0]
+        : (format.category || format.mime.split("/")[0]);
+      newOption.setAttribute("data-category", category);
+
       const formatDescriptor = format.format.toUpperCase();
+      const ext = format.extension ? `.${format.extension}` : '';
+
       if (simpleMode) {
-        // Hide any handler-specific information in simple mode
         const cleanName = format.name
           .split("(").join(")").split(")")
           .filter((_, i) => i % 2 === 0)
           .filter(c => c != "")
-          .join(" ");
-        newOption.appendChild(document.createTextNode(`${formatDescriptor} - ${cleanName} (${format.mime})`));
+          .join(" ")
+          .trim();
+        newOption.innerHTML = `
+          <span class="fmt-cat-dot" data-cat="${category}"></span>
+          <span class="fmt-ext">${formatDescriptor}</span>
+          <span class="fmt-info">
+            <span class="fmt-name">${cleanName}</span>
+            <span class="fmt-mime">${format.mime}${ext ? ` · ${ext}` : ''}</span>
+          </span>
+        `;
       } else {
-        newOption.appendChild(document.createTextNode(`${formatDescriptor} - ${format.name} (${format.mime}) ${handler.name}`));
+        newOption.innerHTML = `
+          <span class="fmt-cat-dot" data-cat="${category}"></span>
+          <span class="fmt-ext">${formatDescriptor}</span>
+          <span class="fmt-info">
+            <span class="fmt-name">${format.name}</span>
+            <span class="fmt-mime">${format.mime}${ext ? ` · ${ext}` : ''} · ${handler.name}</span>
+          </span>
+        `;
       }
 
       const clickHandler = (event: Event) => {
-        if (!(event.target instanceof HTMLButtonElement)) return;
-        const targetParent = event.target.parentElement;
-        const previous = targetParent?.getElementsByClassName("selected")?.[0];
-        if (previous) previous.className = "";
-        event.target.className = "selected";
-        const allSelected = document.getElementsByClassName("selected");
+        const btn = (event.target as HTMLElement).closest('button');
+        if (!btn) return;
+        const targetParent = btn.parentElement;
+        const previous = targetParent?.querySelector('.selected');
+        if (previous) previous.classList.remove('selected');
+        btn.classList.add('selected');
+        const allSelected = document.querySelectorAll('.format-list .selected');
         if (allSelected.length === 2) {
           ui.convertButton.className = "btn-primary";
         } else {
@@ -358,23 +409,53 @@ ui.modeToggleButton.addEventListener("click", () => {
   buildOptionList();
 });
 
-const themeSwitcher = document.querySelector("#theme-switcher") as HTMLSelectElement;
-if (themeSwitcher) {
-  themeSwitcher.addEventListener("change", (e) => {
-    const target = e.target as HTMLSelectElement;
-    document.documentElement.setAttribute("data-theme", target.value);
-    
-    // Update theme-color meta tag
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) {
-      if (target.value === 'dark') {
-        metaThemeColor.setAttribute("content", "#0f172a");
-      } else if (target.value === 'black-red') {
-        metaThemeColor.setAttribute("content", "#000000");
-      } else {
-        metaThemeColor.setAttribute("content", "#f8fafc");
-      }
+const themePicker = document.getElementById("theme-picker");
+const themeBtn = document.getElementById("theme-btn");
+const currentThemeName = document.getElementById("current-theme-name");
+const themeOptions = document.querySelectorAll(".theme-option");
+
+if (themePicker && themeBtn && currentThemeName) {
+  // Toggle menu open/close
+  themeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    themePicker.classList.toggle("open");
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!themePicker.contains(e.target as Node)) {
+      themePicker.classList.remove("open");
     }
+  });
+
+  // Handle theme selection
+  themeOptions.forEach(option => {
+    option.addEventListener("click", () => {
+      const val = option.getAttribute("data-theme-val");
+      const name = option.textContent?.trim() || "";
+      if (!val) return;
+
+      // Update UI state
+      themeOptions.forEach(opt => opt.classList.remove("active"));
+      option.classList.add("active");
+      currentThemeName.textContent = name;
+      themePicker.classList.remove("open");
+
+      // Apply theme
+      document.documentElement.setAttribute("data-theme", val);
+      
+      // Update theme-color meta tag
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor) {
+        if (val === 'dark') {
+          metaThemeColor.setAttribute("content", "#0f172a");
+        } else if (val === 'black-red') {
+          metaThemeColor.setAttribute("content", "#000000");
+        } else {
+          metaThemeColor.setAttribute("content", "#f8fafc");
+        }
+      }
+    });
   });
 }
 

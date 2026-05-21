@@ -35,13 +35,23 @@
       <span class="brand-text">Convert<span class="brand-highlight">.to.it</span></span>
     </div>
     <div class="nav-controls">
-      <div class="theme-wrapper">
-        <i data-lucide="palette" class="theme-icon"></i>
-        <select id="theme-switcher">
-          <option value="dark">Dark</option>
-          <option value="light">Light</option>
-          <option value="black-red">Crimson</option>
-        </select>
+      <div class="theme-picker" id="theme-picker">
+        <button class="theme-picker-btn" id="theme-btn" title="Change Theme">
+          <i data-lucide="palette"></i>
+          <span id="current-theme-name">Dark</span>
+          <i data-lucide="chevron-down" class="chevron"></i>
+        </button>
+        <div class="theme-menu" id="theme-menu">
+          <button class="theme-option" data-theme-val="light">
+            <span class="color-dot" style="background: #e2e8f0;"></span>Light
+          </button>
+          <button class="theme-option active" data-theme-val="dark">
+            <span class="color-dot" style="background: #1e293b;"></span>Dark
+          </button>
+          <button class="theme-option" data-theme-val="black-red">
+            <span class="color-dot" style="background: #e50914;"></span>Crimson
+          </button>
+        </div>
       </div>
       <button id="mode-button" class="btn-ghost" title="Toggle Advanced Mode">
         <i data-lucide="settings"></i>
@@ -55,7 +65,7 @@
   </nav>
 
   <main class="main-content">
-    <header class="hero">
+    <header class="hero" id="hero-header">
       <div class="badge">
         <i data-lucide="shield-check"></i>
         <span>100% Private, On-Device</span>
@@ -67,55 +77,72 @@
     <div class="converter-card">
       <input id="file-input" type="file" multiple>
       
-      <div id="file-area" class="upload-zone">
-        <div class="upload-icon-wrapper">
-          <i data-lucide="upload-cloud"></i>
-        </div>
-        <div class="upload-text">
-          <h2 id="upload-title">Click to add your files</h2>
-          <p id="drop-hint-text">or drag and drop them here</p>
+      <!-- Step 1: Upload -->
+      <div id="step-upload">
+        <div id="file-area" class="upload-zone">
+          <div class="upload-icon-wrapper">
+            <i data-lucide="upload-cloud"></i>
+          </div>
+          <div class="upload-text">
+            <h2 id="upload-title">Click to add your files</h2>
+            <p id="drop-hint-text">or drag and drop them here</p>
+          </div>
         </div>
       </div>
       
-      <div id="format-containers" class="format-selectors" style="display: none;">
-        <div id="from-container" class="format-container">
-          <div class="format-header">
-            <h3>Convert from</h3>
-            <div class="search-box">
-              <i data-lucide="search"></i>
-              <input type="text" id="search-from" class="search" placeholder="Search format...">
+      <!-- Step 2: Format Selection -->
+      <div id="step-formats" style="display: none; flex-direction: column; gap: 1.25rem; height: 100%;">
+        <div class="selected-files-bar">
+          <div class="sf-info">
+            <div class="sf-icon"><i data-lucide="file-check-2"></i></div>
+            <div class="sf-text">
+              <div id="selected-file-name" class="sf-name"></div>
+              <div id="selected-file-count" class="sf-count"></div>
             </div>
           </div>
-          <div class="format-list-wrapper">
-            <div id="from-list" class="format-list"></div>
-          </div>
-        </div>
-        
-        <div class="format-divider">
-          <div class="divider-icon-wrapper">
-            <i data-lucide="arrow-right"></i>
-          </div>
+          <button id="btn-change-file" class="btn-secondary">Change Files</button>
         </div>
 
-        <div id="to-container" class="format-container">
-          <div class="format-header">
-            <h3>Convert to</h3>
-            <div class="search-box">
-              <i data-lucide="search"></i>
-              <input type="text" id="search-to" class="search" placeholder="Search format...">
+        <div id="format-containers" class="format-selectors">
+          <div id="from-container" class="format-container">
+            <div class="format-header">
+              <h3>Convert from</h3>
+              <div class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" id="search-from" class="search" placeholder="Search format...">
+              </div>
+            </div>
+            <div class="format-list-wrapper">
+              <div id="from-list" class="format-list"></div>
             </div>
           </div>
-          <div class="format-list-wrapper">
-            <div id="to-list" class="format-list"></div>
+          
+          <div class="format-divider">
+            <div class="divider-icon-wrapper">
+              <i data-lucide="arrow-right"></i>
+            </div>
+          </div>
+  
+          <div id="to-container" class="format-container">
+            <div class="format-header">
+              <h3>Convert to</h3>
+              <div class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" id="search-to" class="search" placeholder="Search format...">
+              </div>
+            </div>
+            <div class="format-list-wrapper">
+              <div id="to-list" class="format-list"></div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="action-area">
-        <button id="convert-button" class="btn-primary disabled">
-          <span class="btn-text">Convert Now</span>
-          <i data-lucide="arrow-right" class="btn-icon"></i>
-        </button>
+  
+        <div class="action-area" style="margin-top: 0.5rem;">
+          <button id="convert-button" class="btn-primary disabled">
+            <span class="btn-text">Convert Now</span>
+            <i data-lucide="arrow-right" class="btn-icon"></i>
+          </button>
+        </div>
       </div>
     </div>
   </main>

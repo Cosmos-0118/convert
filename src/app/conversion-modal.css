@@ -3,12 +3,17 @@
    ═══════════════════════════════════════════════════════ */
 
 .cvt-modal {
-  width: min(520px, 90vw);
+  width: 100%;
+  height: 100%;
+  max-width: 1400px;
+  max-height: 90vh;
   background: var(--background-secondary);
   border: 1px solid var(--surface-border);
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: var(--shadow-lg), 0 0 60px -10px var(--accent-glow);
+  box-shadow: var(--shadow-lg), 0 0 80px -10px var(--accent-glow);
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Header ──────────────────────────────────────────── */
@@ -128,32 +133,36 @@
 
 /* ── Terminal ────────────────────────────────────────── */
 .cvt-terminal {
-  margin: 1rem 1.25rem 1.25rem;
+  margin: 1rem 1.5rem 1.5rem;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--surface-border);
   background: var(--background-primary);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .cvt-terminal-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.6rem 1rem;
+  padding: 0.75rem 1.25rem;
   background: var(--surface-default);
   border-bottom: 1px solid var(--surface-border);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 .cvt-terminal-dots {
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 
 .cvt-terminal-dots span {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
 }
 
@@ -166,22 +175,23 @@
   text-align: center;
   font-weight: 500;
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.85rem;
 }
 
 .cvt-terminal-time {
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
   font-weight: 600;
   color: var(--accent-primary);
+  font-size: 0.85rem;
 }
 
 .cvt-terminal-body {
-  padding: 0.75rem 1rem;
-  max-height: 220px;
-  min-height: 80px;
+  padding: 1rem 1.5rem;
+  flex: 1;
   overflow-y: auto;
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-  font-size: 0.8rem;
-  line-height: 1.6;
+  font-size: 0.85rem;
+  line-height: 1.7;
 }
 
 /* Custom scrollbar */

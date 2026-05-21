@@ -225,7 +225,7 @@ export class ConversionModal {
     this._stopDots();
     this._cancelPendingScroll();
     this.modal.style.opacity = '0';
-    this.modal.style.transform = 'translate(-50%, -50%) scale(0.95)';
+    this.modal.style.transform = 'scale(0.95)';
     this.backdrop.style.opacity = '0';
     setTimeout(() => {
       this.modal.style.display = 'none';
@@ -236,11 +236,11 @@ export class ConversionModal {
   // ─── Private helpers ───────────────────────────────────
 
   private _show() {
-    this.modal.style.display = 'block';
+    this.modal.style.display = 'flex';
     this.backdrop.style.display = 'block';
     void this.modal.offsetWidth; // force reflow
     this.modal.style.opacity = '1';
-    this.modal.style.transform = 'translate(-50%, -50%) scale(1)';
+    this.modal.style.transform = 'scale(1)';
     this.backdrop.style.opacity = '1';
   }
 
