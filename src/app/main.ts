@@ -2,6 +2,10 @@ import type { FileFormat, FileData, FormatHandler, ConvertPathNode } from "@/cor
 import normalizeMimeType from "@/core/normalize-mime-type.ts";
 import handlers from "@/handlers/registry.ts";
 import { TraversionGraph } from "@/core/traversion-graph.ts";
+import { createIcons, icons } from 'lucide';
+
+// Initialize icons immediately
+createIcons({ icons });
 
 /** Files currently selected for conversion */
 let selectedFiles: File[] = [];
@@ -23,8 +27,16 @@ const ui = {
   inputSearch: document.querySelector("#search-from") as HTMLInputElement,
   outputSearch: document.querySelector("#search-to") as HTMLInputElement,
   popupBox: document.querySelector("#popup") as HTMLDivElement,
-  popupBackground: document.querySelector("#popup-bg") as HTMLDivElement
+  popupBackground: document.querySelector("#popup-bg") as HTMLDivElement,
+  formatContainers: document.querySelector("#format-containers") as HTMLDivElement
 };
+
+// Ensure popup is visible initially if needed
+ui.popupBackground.style.display = "block";
+ui.popupBackground.style.opacity = "1";
+ui.popupBox.style.display = "block";
+ui.popupBox.style.opacity = "1";
+ui.popupBox.style.transform = "translate(-50%, -50%) scale(1)";
 
 /**
  * Filters a list of butttons to exclude those not matching a substring.
@@ -104,10 +116,21 @@ const fileSelectHandler = (event: Event) => {
   files.sort((a, b) => a.name === b.name ? 0 : (a.name < b.name ? -1 : 1));
   selectedFiles = files;
 
-  ui.fileSelectArea.innerHTML = `<h2>
-    ${files[0].name}
-    ${files.length > 1 ? `<br>... and ${files.length - 1} more` : ""}
-  </h2>`;
+  ui.fileSelectArea.innerHTML = `
+    <div class="upload-icon-wrapper" style="color: var(--success); background: rgba(16, 185, 129, 0.1);">
+      <i data-lucide="check-circle-2"></i>
+    </div>
+    <div class="upload-text">
+      <h2>${files[0].name}</h2>
+      <p>${files.length > 1 ? `... and ${files.length - 1} more files` : "File ready for conversion"}</p>
+    </div>
+  `;
+  createIcons({ icons });
+
+  // Show format selectors if hidden
+  if (ui.formatContainers.style.display === "none") {
+    ui.formatContainers.style.display = "flex";
+  }
 
   // Common MIME type adjustments (to match "mime" library)
   let mimeType = normalizeMimeType(files[0].type);
@@ -170,16 +193,26 @@ window.addEventListener("paste", fileSelectHandler);
  * @param html HTML content of the popup box.
  */
 window.showPopup = function (html: string) {
-  ui.popupBox.innerHTML = html;
+  ui.popupBox.innerHTML = `<div class="modal-content">${html}</div>`;
   ui.popupBox.style.display = "block";
   ui.popupBackground.style.display = "block";
+  // Force reflow
+  void ui.popupBox.offsetWidth;
+  ui.popupBox.style.opacity = "1";
+  ui.popupBox.style.transform = "translate(-50%, -50%) scale(1)";
+  ui.popupBackground.style.opacity = "1";
 }
 /**
  * Hide the on-screen popup.
  */
 window.hidePopup = function () {
-  ui.popupBox.style.display = "none";
-  ui.popupBackground.style.display = "none";
+  ui.popupBox.style.opacity = "0";
+  ui.popupBox.style.transform = "translate(-50%, -50%) scale(0.95)";
+  ui.popupBackground.style.opacity = "0";
+  setTimeout(() => {
+    ui.popupBox.style.display = "none";
+    ui.popupBackground.style.display = "none";
+  }, 300);
 }
 
 const allOptions: Array<{ format: FileFormat, handler: FormatHandler }> = [];
@@ -263,9 +296,9 @@ async function buildOptionList () {
         event.target.className = "selected";
         const allSelected = document.getElementsByClassName("selected");
         if (allSelected.length === 2) {
-          ui.convertButton.className = "";
+          ui.convertButton.className = "btn-primary";
         } else {
-          ui.convertButton.className = "disabled";
+          ui.convertButton.className = "btn-primary disabled";
         }
       };
 
@@ -300,6 +333,8 @@ async function buildOptionList () {
       "Consider saving the output of printSupportedFormatCache() to cache.json."
     );
   } finally {
+    // Yield to the browser render loop before running heavy initialization tasks
+    await new Promise(resolve => setTimeout(resolve, 100));
     await buildOptionList();
     console.log("Built initial format list.");
   }
@@ -307,11 +342,12 @@ async function buildOptionList () {
 
 ui.modeToggleButton.addEventListener("click", () => {
   simpleMode = !simpleMode;
+  const span = ui.modeToggleButton.querySelector("span");
   if (simpleMode) {
-    ui.modeToggleButton.textContent = "Advanced mode";
+    if (span) span.textContent = "Basic";
     document.body.classList.remove("advanced-mode");
   } else {
-    ui.modeToggleButton.textContent = "Simple mode";
+    if (span) span.textContent = "Advanced";
     document.body.classList.add("advanced-mode");
   }
   buildOptionList();
@@ -358,8 +394,11 @@ async function attemptConvertPath (files: FileData[], path: ConvertPathNode[]) {
     }
   }
 
-  ui.popupBox.innerHTML = `<h2>Finding conversion route...</h2>
-    <p>Trying <b>${pathString}</b>...</p>`;
+  ui.popupBox.innerHTML = `<div class="modal-content">
+    <div class="spinner"></div>
+    <h2>Finding conversion route...</h2>
+    <p>Trying <b style="color: var(--accent-primary);">${pathString}</b>...</p>
+  </div>`;
 
   for (let i = 0; i < path.length - 1; i ++) {
     const handler = path[i + 1].handler;
@@ -398,8 +437,11 @@ async function attemptConvertPath (files: FileData[], path: ConvertPathNode[]) {
       deadEndAttempts.push(deadEndPath);
       window.traversionGraph.addDeadEndPath(path.slice(0, i + 2));
 
-      ui.popupBox.innerHTML = `<h2>Finding conversion route...</h2>
-        <p>Looking for a valid path...</p>`;
+      ui.popupBox.innerHTML = `<div class="modal-content">
+        <div class="spinner"></div>
+        <h2>Finding conversion route...</h2>
+        <p>Looking for a valid path...</p>
+      </div>`;
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
       return null;
@@ -489,10 +531,14 @@ ui.convertButton.onclick = async function () {
     }
 
     window.showPopup(
-      `<h2>Converted ${inputOption.format.format} to ${outputOption.format.format}!</h2>` +
-      `<p>Path used: <b>${output.path.map(c => c.format.format).join(" → ")}</b>.</p>\n` +
-      `<button onclick="window.hidePopup()">OK</button>`
+      `<div class="upload-icon-wrapper" style="color: var(--success); background: rgba(16, 185, 129, 0.1); margin: 0 auto 1rem auto; width: 60px; height: 60px;">
+        <i data-lucide="check-circle-2" style="width: 30px; height: 30px;"></i>
+      </div>
+      <h2 style="margin-bottom: 0.5rem;">Conversion Successful!</h2>` +
+      `<p style="margin-bottom: 1.5rem;">Path used: <b style="color: var(--accent-primary);">${output.path.map(c => c.format.format).join(" → ")}</b></p>\n` +
+      `<button onclick="window.hidePopup()">Close</button>`
     );
+    createIcons({ icons });
 
   } catch (e) {
 
@@ -506,7 +552,7 @@ ui.convertButton.onclick = async function () {
 
 // Display the current git commit SHA in the UI, if available
 {
-  const commitElement = document.querySelector("#commit-id");
+  const commitElement = document.querySelector("#commit-id .commit-text");
   if (commitElement) {
     commitElement.textContent = import.meta.env.VITE_COMMIT_SHA ?? "unknown";
   }
